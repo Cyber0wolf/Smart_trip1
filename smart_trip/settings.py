@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +21,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-x4-(kej!$p30iu3)k1811)f8e(x3mqv(%%mm0+f)*63gvouzq2'
+# Production: Read SECRET_KEY from environment variable for security
+# Development: Falls back to a default (should be overridden in production)
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-x4-(kej!$p30iu3)k1811)f8e(x3mqv(%%mm0+f)*63gvouzq2')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Production: Set DEBUG=False via environment variable
+# Development: Defaults to True for local development
+DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
 
-ALLOWED_HOSTS = []
+# Production: Allow all hosts for Render deployment (safe for cloud hosting)
+# For stricter control, set ALLOWED_HOSTS env var as comma-separated list
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 
 AUTH_USER_MODEL = 'users.User'
 
@@ -119,15 +126,17 @@ ASGI_APPLICATION = "smart_trip.asgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+# Production: Uses PostgreSQL with environment variables (Render-compatible)
+# Development: Falls back to Docker Compose defaults if env vars not set
 
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "smart_trip_db",
-        "USER": "postgres",
-        "PASSWORD": "postgres",
-        "HOST": "db",      
-        "PORT": 5432,
+        "NAME": os.environ.get("DB_NAME", "smart_trip_db"),
+        "USER": os.environ.get("DB_USER", "postgres"),
+        "PASSWORD": os.environ.get("DB_PASSWORD", "postgres"),
+        "HOST": os.environ.get("DB_HOST", "db"),
+        "PORT": os.environ.get("DB_PORT", "5432"),
     }
 }
 
@@ -199,8 +208,11 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
+# Production: Render will handle static files via whitenoise or CDN
+# For now, using default static URL - can be enhanced with STATIC_ROOT if needed
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # For production static file collection
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
