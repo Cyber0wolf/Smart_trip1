@@ -9,3 +9,4 @@ gunicorn
 uvicorn
 python-dotenv
 django-cors-headers
+dj-database-url>=2.1.0
