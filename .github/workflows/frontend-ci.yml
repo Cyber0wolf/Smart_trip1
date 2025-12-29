@@ -2,13 +2,14 @@ name: Frontend CI
 
 on:
   push:
-    paths:
-      - "frontend/**"
+    branches:
+      - main
 
 jobs:
-  flutter:
+  frontend:
     runs-on: ubuntu-latest
-    continue-on-error: true  
+    continue-on-error: true
+
     steps:
       - uses: actions/checkout@v3
 
