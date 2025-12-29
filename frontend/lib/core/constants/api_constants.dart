@@ -1,7 +1,7 @@
 
 class ApiConstants {
   // Change this only when backend URL changes
-  static const String baseUrl = 'http://localhost:8000';
+  static const String baseUrl = 'https://smart-trip1.onrender.com';
 
   //  Auth
   static const String login = '$baseUrl/auth/login/';
@@ -12,6 +12,6 @@ class ApiConstants {
 
   //  WebSocket (chat)
   static String tripChatSocket(int tripId, String token) {
-    return 'ws://localhost:8000/ws/trips/$tripId/chat/?token=$token';
+    return 'wss://smart-trip1.onrender.com/ws/trips/$tripId/chat/?token=$token';
   }
 }
